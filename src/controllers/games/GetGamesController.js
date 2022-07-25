@@ -6,7 +6,7 @@ const GetGamesController = async (req, res) =>{
         if(!name){
             const {rows: resultGames} = await connection.query(
                 `
-                SELECT games.*, categories.name FROM games
+                SELECT games.*, categories.name as "categoryName" FROM games
                 JOIN categories
                 ON games."categoryId" = categories.id
                 `
@@ -15,12 +15,12 @@ const GetGamesController = async (req, res) =>{
         }
         const {rows: resultGames} = await connection.query(
             `
-            SELECT games.*, categories.name FROM games
+            SELECT games.*, categories.name as "categoryName" FROM games
             JOIN categories
             ON games."categoryId" = categories.id
-            WHERE games.name = $1
+            WHERE games.name LIKE  $1
             `,
-            [name]
+            [name + "%"]
         );
         res.status(200).send(resultGames);
     }catch (err){
