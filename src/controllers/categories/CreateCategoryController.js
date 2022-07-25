@@ -1,25 +1,25 @@
 import { connection } from "../../database.js";
 import categorySchema from "../../Schemas/categorySchema.js";
 
-const PostCategoriesController = async (req, res) => {
+const CreateCategoryController = async (req, res) => {
     try {
         const { name } = req.body;
 
         const { error } = categorySchema.validate(req.body);
         if (error) return res.sendStatus(400);
         
-        const { rows: alreadyExists } = await connection.query(
+        const { rows: categoryAlreadyExists } = await connection.query(
             "SELECT * FROM categories WHERE name=$1", 
             [name]
         );
-        if (alreadyExists.length) return res.sendStatus(409);
+        if (categoryAlreadyExists.length) return res.sendStatus(409);
         
         await connection.query(
             "INSERT INTO categories (name) VALUES ($1)", 
             [name]
         );
 
-        res.sendStatus(200);
+        res.sendStatus(201);
 
     } catch (error) {
 
@@ -28,4 +28,4 @@ const PostCategoriesController = async (req, res) => {
     }
 }
 
-export default PostCategoriesController;
+export default CreateCategoryController;
