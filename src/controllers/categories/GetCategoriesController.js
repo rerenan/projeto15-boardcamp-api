@@ -1,9 +1,14 @@
-import pg from 'pg';
 import { connection } from '../../database.js';
 
 const GetCategoriesController = async (req,res) =>{
-    const {rows: resultCategories} = await connection.query("SELECT * FROM categories");
-    res.send(resultCategories);
+    try {
+        const {rows: resultCategories} = await connection.query("SELECT * FROM categories");
+        res.status(200).send(resultCategories);
+    }catch (err){
+        console.log(err);
+        res.sendStatus(500);
+    }
+    
 };
 
 export default GetCategoriesController;
